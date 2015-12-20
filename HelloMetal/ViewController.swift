@@ -88,6 +88,12 @@ class ViewController: UIViewController {
             print("Failed to create pipeline state, error \(pipelineError)")
         }
         
+        // STEP 7: Create a Command Queue
+        
+        // A command queue is an ordered list of commands that you tell the GPU to execute
+        var commandQueue : MTLCommandQueue! = nil
+        commandQueue = device.newCommandQueue()
+        
         
     }
 
