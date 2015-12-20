@@ -26,4 +26,13 @@ vertex float4 basic_vertex(
         
 }
 
+// STEP 5: Create a Fragment Shader
+// The job of a fragment shader is to return the final colour of each fragment
+// For now, each fragment will be white
+fragment half4 basic_fragment() {
+    
+    return half4(1.0);  // Return (1, 1, 1, 1) which is white
+                        // TODO: Play around with changing this value to set other colours
+}
+
 
