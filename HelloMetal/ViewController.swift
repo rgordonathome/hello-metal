@@ -61,7 +61,6 @@ class ViewController: UIViewController {
         vertexBuffer = device.newBufferWithBytes(vertexData, length: dataSize, options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
         
-        
     }
 
     override func didReceiveMemoryWarning() {
