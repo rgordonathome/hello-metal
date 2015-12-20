@@ -7,6 +7,10 @@
 //
 //  Implementation based on tutorial at:
 //  http://www.raywenderlich.com/77488/ios-8-metal-tutorial-swift-getting-started
+//
+//  With bits from:
+//  https://github.com/rlnasuti/HelloMetakitOSX
+//  ... to make this work on Xcode7 and iOS 9.
 
 import UIKit
 import Metal
@@ -22,6 +26,9 @@ class ViewController: UIViewController {
     
     // The buffer that will store the shape to draw
     var vertexBuffer: MTLBuffer! = nil
+    
+    // The render pipeline property, to keep track of compiled render pipeline
+    var pipelineState: MTLRenderPipelineState! = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +66,27 @@ class ViewController: UIViewController {
         // Found options list for this parameter here:
         //  https://developer.apple.com/library/ios/documentation/Metal/Reference/MTLResource_Ref/index.html#//apple_ref/swift/struct/c:@E@MTLResourceOptions
         vertexBuffer = device.newBufferWithBytes(vertexData, length: dataSize, options: MTLResourceOptions.CPUCacheModeDefaultCache)
+        
+        // STEP 6: Create a Render Pipeline
+        
+        // Shaders are pre-compiled, creating a library lets us look them up and use them by name later
+        let defaultLibrary = device.newDefaultLibrary()
+        let vertexProgram = defaultLibrary!.newFunctionWithName("basic_vertex")
+        let fragmentProgram = defaultLibrary!.newFunctionWithName("basic_fragment")
+        
+        // Set up render pipeline configuration (shaders and pixel format for color attachment)
+        // Set color system to same as the output buffer – the CAMetalLayer.
+        let pipelineStateDescriptor = MTLRenderPipelineDescriptor()
+        pipelineStateDescriptor.vertexFunction = vertexProgram
+        pipelineStateDescriptor.fragmentFunction = fragmentProgram
+        pipelineStateDescriptor.colorAttachments[0].pixelFormat = .BGRA8Unorm
+        
+        // Compile the pipeline configuration (more efficient to use this going forward)
+        do {
+            try pipelineState = device.newRenderPipelineStateWithDescriptor(pipelineStateDescriptor)
+        } catch let pipelineError {
+            print("Failed to create pipeline state, error \(pipelineError)")
+        }
         
         
     }
