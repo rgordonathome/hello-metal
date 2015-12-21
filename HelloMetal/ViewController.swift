@@ -32,7 +32,10 @@ class ViewController: UIViewController {
     
     // Timer object to ensure screen is drawn again when device screen refreshes
     var timer: CADisplayLink! = nil
-    
+
+    // Ordered list of commands you tell the GPU to execute, one at a time
+    var commandQueue : MTLCommandQueue! = nil
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -94,7 +97,6 @@ class ViewController: UIViewController {
         // GETTING STARTED, STEP 7: Create a Command Queue
         
         // A command queue is an ordered list of commands that you tell the GPU to execute
-        var commandQueue : MTLCommandQueue! = nil
         commandQueue = device.newCommandQueue()
         
         // RENDERING THE TRIANGLE, STEP 1: Create a display link
@@ -120,10 +122,19 @@ class ViewController: UIViewController {
         // Get a drawable layer
         let drawable = metalLayer.nextDrawable()
 
+        // Create the render pass descriptor
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable!.texture
         renderPassDescriptor.colorAttachments[0].loadAction = .Clear
         renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0.0, green: 104.0/255.0, blue: 5/255.0, alpha: 1.0)
+
+        // RENDERING THE TRIANGLE, STEP 3: Create a command buffer
+        // This is the list of render commands that you wish to execute for this frame of animation
+        // Note that nothing actually happens until you commit the command buffer; this gives very
+        // fine grained control over when things occur on the GPU
+        let commandBuffer = commandQueue.commandBuffer()
+        
+        
         
     }
     
