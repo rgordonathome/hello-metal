@@ -150,6 +150,10 @@ class ViewController: UIViewController {
             
         }
         
+        // RENDERING THE TRIANGLE, STEP 5: Commit your Command Buffer
+        commandBuffer.presentDrawable(drawable!) // Make sure new texture is presented as soon as drawing completes
+        commandBuffer.commit()                   // Commit transaction and send to GPU
+        
     }
     
     // gameLoop calls render for each frame of animation
