@@ -32,7 +32,7 @@ class ViewController: UIViewController {
     
     // Timer object to ensure screen is drawn again when device screen refreshes
     var timer: CADisplayLink! = nil
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -111,8 +111,20 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
+    // RENDERING THE TRIANGLE, STEP 2: Create a Render Pass Descritor
+    // A render pass descriptor is an object that configures what texture is being rendered to, what the clear color is,
+    // and a few other things (not sure what though – seems to be only two lines?)
     func render() {
-        // TODO
+
+        // Get a drawable layer
+        let drawable = metalLayer.nextDrawable()
+
+        let renderPassDescriptor = MTLRenderPassDescriptor()
+        renderPassDescriptor.colorAttachments[0].texture = drawable!.texture
+        renderPassDescriptor.colorAttachments[0].loadAction = .Clear
+        renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0.0, green: 104.0/255.0, blue: 5/255.0, alpha: 1.0)
+        
     }
     
     // gameLoop calls render for each frame of animation
