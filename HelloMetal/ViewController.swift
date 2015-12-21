@@ -134,7 +134,21 @@ class ViewController: UIViewController {
         // fine grained control over when things occur on the GPU
         let commandBuffer = commandQueue.commandBuffer()
         
-        
+        // RENDERING THE TRIANGLE, STEP 4: Create a render command encoder
+        // Creating a render command requires a helper object called a 'render command encoder'
+        let renderEncoderOptional: MTLRenderCommandEncoder! = commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor)
+        if let renderEncoder = renderEncoderOptional {
+            renderEncoder.setRenderPipelineState(pipelineState)
+            renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, atIndex: 0)
+            // Here we tell the GPU to draw a set of traingles, based on the vertex buffer created earlier
+            // Each triangle consists of 3 vertices, starting at index 0 inside the buffer, and there is 1 triangle total
+            renderEncoder.drawPrimitives(.Triangle, vertexStart: 0, vertexCount: 3, instanceCount: 1)
+            // NOTE TO SELF: Could you draw many instances at once? Why would you want to do that?
+            //               Wouldn't they draw on top of each other in the same position?
+            // NOTE TO SELF: Could we draw many primitives at once on this same render command encoder?
+            renderEncoder.endEncoding()
+            
+        }
         
     }
     
