@@ -29,17 +29,20 @@ class ViewController: UIViewController {
     
     // The render pipeline property, to keep track of compiled render pipeline
     var pipelineState: MTLRenderPipelineState! = nil
+    
+    // Timer object to ensure screen is drawn again when device screen refreshes
+    var timer: CADisplayLink! = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        // STEP 1: Create a connection to GPU (device that will run Metal commands)
+        // GETTING STARTED, STEP 1: Create a connection to GPU (device that will run Metal commands)
         
         // Returns a reference to the default MTL device (GPU)
         device = MTLCreateSystemDefaultDevice()
         
-        // STEP 2: Create a CAMetal Layer
+        // GETTING STARTED, STEP 2: Create a CAMetal Layer
         
         metalLayer = CAMetalLayer()             // Create a new metal backing layer
         metalLayer.device = device              // Set layer's device to one just created
@@ -48,7 +51,7 @@ class ViewController: UIViewController {
         metalLayer.frame = view.layer.frame     // Frame of layer matches the frame of this view
         view.layer.addSublayer(metalLayer)      // Add metal layer as sub layer of the view's main layer
         
-        // STEP 3: Create a Vertex Buffer
+        // GETTING STARTED, STEP 3: Create a Vertex Buffer
         
         // Create a buffer to represent simple triangle shown here:
         // http://cdn5.raywenderlich.com/wp-content/uploads/2014/07/4_vertices-320x320.jpg
@@ -67,7 +70,7 @@ class ViewController: UIViewController {
         //  https://developer.apple.com/library/ios/documentation/Metal/Reference/MTLResource_Ref/index.html#//apple_ref/swift/struct/c:@E@MTLResourceOptions
         vertexBuffer = device.newBufferWithBytes(vertexData, length: dataSize, options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
-        // STEP 6: Create a Render Pipeline
+        // GETTING STARTED, STEP 6: Create a Render Pipeline
         
         // Shaders are pre-compiled, creating a library lets us look them up and use them by name later
         let defaultLibrary = device.newDefaultLibrary()
@@ -88,11 +91,17 @@ class ViewController: UIViewController {
             print("Failed to create pipeline state, error \(pipelineError)")
         }
         
-        // STEP 7: Create a Command Queue
+        // GETTING STARTED, STEP 7: Create a Command Queue
         
         // A command queue is an ordered list of commands that you tell the GPU to execute
         var commandQueue : MTLCommandQueue! = nil
         commandQueue = device.newCommandQueue()
+        
+        // RENDERING THE TRIANGLE, STEP 1: Create a display link
+        
+        // Set things up so that the gameLoop() method is called every time the screen refreshes
+        timer = CADisplayLink(target: self, selector: Selector("gameLoop"))
+        timer.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
         
         
     }
@@ -100,6 +109,17 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func render() {
+        // TODO
+    }
+    
+    // gameLoop calls render for each frame of animation
+    func gameLoop() {
+        autoreleasepool {
+            self.render()
+        }
     }
 
 

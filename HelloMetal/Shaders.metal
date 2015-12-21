@@ -9,7 +9,7 @@
 #include <metal_stdlib>
 using namespace metal;
 
-// STEP 4: Create a Vertex Shader
+// GETTING STARTED, STEP 4: Create a Vertex Shader
 
 vertex float4 basic_vertex(
 
@@ -26,7 +26,7 @@ vertex float4 basic_vertex(
         
 }
 
-// STEP 5: Create a Fragment Shader
+// GETTING STARTED, STEP 5: Create a Fragment Shader
 // The job of a fragment shader is to return the final colour of each fragment
 // For now, each fragment will be white
 fragment half4 basic_fragment() {
